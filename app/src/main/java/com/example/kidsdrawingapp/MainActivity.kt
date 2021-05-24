@@ -1,7 +1,9 @@
 package com.example.kidsdrawingapp
 
 import android.app.Dialog
+import android.media.Image
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         ib_brush = findViewById(R.id.ib_brush)
         ll_paint_colors = findViewById(R.id.ll_paint_colors)
 
-        drawing_view.setSizeForBrush(20.toFloat())
+        drawing_view.setSizeForBrush(10.toFloat())
 
         mImageButtonCurrentPaint = ll_paint_colors[1] as ImageButton
 
@@ -59,6 +61,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         brushDialog.show()
+    }
+
+    fun paintClicked(view: View){
+        if(view !== mImageButtonCurrentPaint){
+            val imageButton = view as ImageButton
+
+            val colorTag = imageButton.tag.toString()
+
+            drawing_view.setColor(colorTag)
+
+            imageButton.setImageDrawable(
+                ContextCompat.getDrawable(this,R.drawable.pallet_pressed)
+            )
+            mImageButtonCurrentPaint!!.setImageDrawable(
+                ContextCompat.getDrawable(this,R.drawable.pallet_normal)
+            )
+            mImageButtonCurrentPaint = view
+        }
+
     }
 
 
