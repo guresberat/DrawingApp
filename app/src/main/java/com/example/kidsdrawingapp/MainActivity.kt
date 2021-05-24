@@ -1,11 +1,9 @@
 package com.example.kidsdrawingapp
 
 import android.app.Dialog
-import android.media.Image
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
-import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,12 +18,13 @@ class MainActivity : AppCompatActivity() {
         ib_brush = findViewById(R.id.ib_brush)
 
         drawing_view.setSizeForBrush(20.toFloat())
-        ib_brush.setOnClickListener{
+        ib_brush.setOnClickListener {
             showBrushSizeChooserDialog()
         }
 
     }
-    private fun showBrushSizeChooserDialog(){
+
+    private fun showBrushSizeChooserDialog() {
         val brushDialog = Dialog(this)
         brushDialog.setContentView(R.layout.dialog_brush_size)
         brushDialog.setTitle("Brush Size: ")
@@ -44,7 +43,6 @@ class MainActivity : AppCompatActivity() {
             drawing_view.setSizeForBrush(30.toFloat())
             brushDialog.dismiss()
         }
-
 
         brushDialog.show()
     }
