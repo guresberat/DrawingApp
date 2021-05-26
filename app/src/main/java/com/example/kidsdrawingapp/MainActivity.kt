@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.media.MediaScannerConnection
 import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.MediaStore
@@ -71,10 +72,10 @@ class MainActivity : AppCompatActivity() {
         ib_undo.setOnClickListener {
             drawing_view.onClickUndo()
         }
-        ib_save.setOnClickListener{
-            if(isReadStorageAllowed()){
+        ib_save.setOnClickListener {
+            if (isReadStorageAllowed()) {
                 BitmapAsyncTask(getBitmapFromView(fl_drawing_view_container)).execute()
-            }else{
+            } else {
                 requestStoragePermission()
             }
         }
@@ -219,7 +220,7 @@ class MainActivity : AppCompatActivity() {
 
     private inner class BitmapAsyncTask(val mBitmap: Bitmap) : AsyncTask<Any, Void, String>() {
 
-        private lateinit var mProgressDialog : Dialog
+        private lateinit var mProgressDialog: Dialog
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -248,28 +249,36 @@ class MainActivity : AppCompatActivity() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             cancelProgressDialog()
-            if(result!!.isNotEmpty()) {
+            if (result!!.isNotEmpty()) {
                 Toast.makeText(
                     this@MainActivity,
                     "File saved succesfully : $result",
                     Toast.LENGTH_SHORT
                 ).show()
-            }else{
+            } else {
                 Toast.makeText(
                     this@MainActivity,
                     "Something went wrong while saving the file",
                     Toast.LENGTH_SHORT
                 ).show()
             }
+            MediaScannerConnection.scanFile(this@MainActivity, arrayOf(result), null) { path, uri ->
+                val shareIntent = Intent()
+                shareIntent.action = Intent.ACTION_SEND
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+                shareIntent.type = "image/png"
+
+                startActivity(Intent.createChooser(shareIntent, "Share"))
+            }
         }
 
-        private fun showProgressDialog(){
-            mProgressDialog = Dialog(this@MainActivity,)
+        private fun showProgressDialog() {
+            mProgressDialog = Dialog(this@MainActivity)
             mProgressDialog.setContentView(R.layout.dialog_custom_progress)
             mProgressDialog.show()
         }
 
-        private fun cancelProgressDialog(){
+        private fun cancelProgressDialog() {
             mProgressDialog.dismiss()
         }
 
